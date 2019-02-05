@@ -54,9 +54,13 @@ export default function(document: swagger.Document): (context: any, next: () => 
     }
 
     // check the request matches the swagger schema
+    let reqBody = context.request.body;
+    if (context.request.files) {
+      reqBody = {...reqBody, ...context.request.files};
+    }
     const validationErrors = swagger.validateRequest(compiledPath, context.method,
       context.request.query,
-      context.request.body,
+      reqBody,
       context.request.headers);
 
     if (validationErrors === undefined) {
